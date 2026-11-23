@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
-# suchi uninstaller - removes the binary. Your clipboard history and snippets
+# kiipr uninstaller - removes the binary. Your clipboard history and snippets
 # are kept.
 #
-#   curl -sSL https://raw.githubusercontent.com/dip-bash/suchi/main/uninstall.sh | bash
+#   curl -sSL https://raw.githubusercontent.com/dip-bash/kiipr/main/uninstall.sh | bash
 #
 set -euo pipefail
 
-BINARY_NAME="suchi"
+BINARY_NAME="kiipr"
 INSTALL_DIR="/usr/local/bin"
 
 SUDO=""
@@ -18,17 +18,17 @@ fi
 
 TARGET="${INSTALL_DIR}/${BINARY_NAME}"
 if [ ! -f "$TARGET" ]; then
-    if command -v suchi >/dev/null 2>&1; then
-        TARGET="$(command -v suchi)"
+    if command -v kiipr >/dev/null 2>&1; then
+        TARGET="$(command -v kiipr)"
     else
-        echo "no suchi binary found in ${INSTALL_DIR} or PATH"
+        echo "no kiipr binary found in ${INSTALL_DIR} or PATH"
         exit 0
     fi
 fi
 
 # stop the daemon if it's running
-if command -v suchi >/dev/null 2>&1; then
-    suchi stop >/dev/null 2>&1 || true
+if command -v kiipr >/dev/null 2>&1; then
+    kiipr stop >/dev/null 2>&1 || true
 fi
 
 echo "==> Removing $TARGET..."
@@ -38,4 +38,4 @@ else
     rm -f "$TARGET"
 fi
 
-echo "==> suchi is uninstalled (your clipboard history and snippets are kept)"
+echo "==> kiipr is uninstalled (your clipboard history and snippets are kept)"

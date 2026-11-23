@@ -22,7 +22,7 @@ const (
 	ClipFile  = "file"  // copied files; Text holds the absolute paths, one per line
 )
 
-// ignoreWindow is how long a text that suchi itself put on the clipboard is
+// ignoreWindow is how long a text that kiipr itself put on the clipboard is
 // kept out of the history.
 const ignoreWindow = 15 * time.Second
 
@@ -41,7 +41,7 @@ type Clip struct {
 	UsedAt    time.Time
 }
 
-// LastActive is when the entry was last copied by an application or chosen in suchi.
+// LastActive is when the entry was last copied by an application or chosen in kiipr.
 func (c Clip) LastActive() time.Time {
 	if c.UsedAt.After(c.CopiedAt) {
 		return c.UsedAt
@@ -148,7 +148,7 @@ func (s *Store) AddItem(ctx context.Context, it NewClip, lim Limits) (added bool
 }
 
 // IgnoreNext tells the daemon not to record text the next time it appears on
-// the clipboard (used when suchi copies a snippet, which is not "history").
+// the clipboard (used when kiipr copies a snippet, which is not "history").
 func (s *Store) IgnoreNext(ctx context.Context, text string) error {
 	_, err := s.db.ExecContext(ctx,
 		`INSERT OR REPLACE INTO ignored (hash, expires_at) VALUES (?, ?)`,

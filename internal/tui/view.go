@@ -9,9 +9,9 @@ import (
 	"github.com/charmbracelet/lipgloss"
 	zone "github.com/lrstanley/bubblezone"
 
-	"github.com/dip-bash/suchi/internal/preview"
-	"github.com/dip-bash/suchi/internal/store"
-	"github.com/dip-bash/suchi/internal/textutil"
+	"github.com/dip-bash/kiipr/internal/preview"
+	"github.com/dip-bash/kiipr/internal/store"
+	"github.com/dip-bash/kiipr/internal/textutil"
 )
 
 // View implements tea.Model. zone.Scan strips the mouse-zone markers and
@@ -123,7 +123,7 @@ func (m *model) viewList() []string {
 		case m.panes[t].query.String() != "":
 			out = append(out, " "+m.styles.dim.Render("no matches"))
 		case t == tabClips:
-			out = append(out, " "+m.styles.dim.Render("history is empty - start the watcher with `suchi daemon`"))
+			out = append(out, " "+m.styles.dim.Render("history is empty - start the watcher with `kiipr daemon`"))
 		default:
 			out = append(out, " "+m.styles.dim.Render("no snippets yet - press a to add one"))
 		}
@@ -412,7 +412,7 @@ func (m *model) viewHelp() string {
 	if m.g.rule == "-" {
 		help[1].k = "j k"
 	}
-	rows := []string{m.styles.bold.Render("suchi")}
+	rows := []string{m.styles.bold.Render("kiipr")}
 	for _, h := range help {
 		switch {
 		case h.k == "" && h.v == "":

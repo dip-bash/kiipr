@@ -12,8 +12,8 @@ import (
 
 	tea "github.com/charmbracelet/bubbletea"
 
-	"github.com/dip-bash/suchi/internal/preview"
-	"github.com/dip-bash/suchi/internal/store"
+	"github.com/dip-bash/kiipr/internal/preview"
+	"github.com/dip-bash/kiipr/internal/store"
 )
 
 func startProgram(t *testing.T, st *store.Store) (*tea.Program, *model, chan os.Signal, func(), chan error) {
@@ -40,12 +40,12 @@ func waitDone(t *testing.T, done chan error, what string) {
 	}
 }
 
-// Regression: opening suchi windows in quick succession made each new one send
+// Regression: opening kiipr windows in quick succession made each new one send
 // SIGTERM to the previous one, which sometimes hung forever inside Bubble Tea's
 // shutdown, leaving its window open. Fire signals at random moments around
 // start-up and shutdown, with and without a competing normal quit.
 func TestSignalsNeverDeadlockTheProgram(t *testing.T) {
-	st, err := store.Open(t.TempDir() + "/suchi.db")
+	st, err := store.Open(t.TempDir() + "/kiipr.db")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -70,7 +70,7 @@ func TestSignalsNeverDeadlockTheProgram(t *testing.T) {
 }
 
 func TestSignalBeforeStartIsNotLost(t *testing.T) {
-	st, err := store.Open(t.TempDir() + "/suchi.db")
+	st, err := store.Open(t.TempDir() + "/kiipr.db")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -90,7 +90,7 @@ func TestSignalBeforeStartIsNotLost(t *testing.T) {
 }
 
 func TestCancelledContextClosesTheProgram(t *testing.T) {
-	st, _ := store.Open(t.TempDir() + "/suchi.db")
+	st, _ := store.Open(t.TempDir() + "/kiipr.db")
 	defer st.Close()
 	ctx, cancel := context.WithCancel(context.Background())
 	m := newModel(ctx, st, Options{Protocol: preview.Blocks, Out: io.Discard})
@@ -104,9 +104,9 @@ func TestCancelledContextClosesTheProgram(t *testing.T) {
 	waitDone(t, done, "context cancel")
 }
 
-// While a command snippet runs, Ctrl+C is the command's; SIGTERM still closes suchi afterwards.
+// While a command snippet runs, Ctrl+C is the command's; SIGTERM still closes kiipr afterwards.
 func TestSIGINTIsIgnoredWhileACommandRuns(t *testing.T) {
-	st, _ := store.Open(t.TempDir() + "/suchi.db")
+	st, _ := store.Open(t.TempDir() + "/kiipr.db")
 	defer st.Close()
 	_, m, sigc, stop, done := startProgram(t, st)
 	defer stop()
@@ -114,7 +114,7 @@ func TestSIGINTIsIgnoredWhileACommandRuns(t *testing.T) {
 	sigc <- syscall.SIGINT
 	select {
 	case <-done:
-		t.Fatal("SIGINT must not close suchi while a command is running")
+		t.Fatal("SIGINT must not close kiipr while a command is running")
 	case <-time.After(300 * time.Millisecond):
 	}
 	sigc <- syscall.SIGTERM
@@ -128,7 +128,7 @@ func TestSIGINTIsIgnoredWhileACommandRuns(t *testing.T) {
 }
 
 func TestQuitAfterExitIsHarmless(t *testing.T) {
-	st, _ := store.Open(t.TempDir() + "/suchi.db")
+	st, _ := store.Open(t.TempDir() + "/kiipr.db")
 	defer st.Close()
 	p, _, _, stop, done := startProgram(t, st)
 	p.Send(tea.KeyMsg{Type: tea.KeyEsc})

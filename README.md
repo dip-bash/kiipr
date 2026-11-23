@@ -1,4 +1,4 @@
-# suchi
+# kiipr
 
 Clipboard history and snippets for the terminal — on **Wayland**, **X11** and plain **TTYs**.
 
@@ -14,7 +14,7 @@ Clipboard history and snippets for the terminal — on **Wayland**, **X11** and 
 ## Install
 
 ```sh
-curl -sSL https://raw.githubusercontent.com/dip-bash/suchi/main/install.sh | bash
+curl -sSL https://raw.githubusercontent.com/dip-bash/kiipr/main/install.sh | bash
 ```
 
 Downloads the right binary for your CPU (x86-64, ARM64, ARMv7, x86), verifies its checksum and installs it to
@@ -22,23 +22,34 @@ Downloads the right binary for your CPU (x86-64, ARM64, ARMv7, x86), verifies it
 unit in place if you have systemd. Options go after `bash -s --`:
 
 ```sh
-curl -sSL https://raw.githubusercontent.com/dip-bash/suchi/main/install.sh | bash -s -- --version 0.5.0 --dir ~/bin
+curl -sSL https://raw.githubusercontent.com/dip-bash/kiipr/main/install.sh | bash -s -- --version 0.5.0 --dir ~/bin
 ```
 
 Remove it again (your history and snippets are kept unless you add `--purge`):
 
 ```sh
-curl -sSL https://raw.githubusercontent.com/dip-bash/suchi/main/uninstall.sh | bash
+curl -sSL https://raw.githubusercontent.com/dip-bash/kiipr/main/uninstall.sh | bash
 ```
 
 On **X11** you also need `xclip` (or `xsel`); Wayland needs nothing extra.
+
+### Renamed from `suchi`
+
+`kiipr` is the new name of this project. Upgrading is automatic:
+
+- the first `kiipr` run moves the old history from `~/.local/share/suchi/suchi.db` to
+  `~/.local/share/kiipr/kiipr.db` (if the move fails the old path is used as is),
+- `SUCHI_*` environment variables are still honoured when the matching `KIIPR_*` variable is unset,
+- the installer stops the old watcher and removes `suchi.service`.
+
+After upgrading, the old binary can be removed with `sudo rm /usr/local/bin/suchi`.
 
 ### Build from source
 
 ```sh
 go mod tidy                       # once: fetches dependencies, writes go.sum
-make build                        # -> bin/suchi
-make cross-build VERSION=0.5.0    # -> dist/suchi-linux-{amd64,arm64,arm,386} + checksums.txt
+make build                        # -> bin/kiipr
+make cross-build VERSION=0.5.0    # -> dist/kiipr-linux-{amd64,arm64,arm,386} + checksums.txt
 make test
 ```
 
@@ -54,32 +65,32 @@ git tag v0.5.0 && git push origin v0.5.0
 ## Use
 
 ```sh
-suchi daemon        # start the background watcher (records every copy)
-suchi               # open the interface
-suchi -s            # open the interface on the Snip tab
-suchi stop          # stop the watcher
-suchi status        # what is running, which backend, where the database is
+kiipr daemon        # start the background watcher (records every copy)
+kiipr               # open the interface
+kiipr -s            # open the interface on the Snip tab
+kiipr stop          # stop the watcher
+kiipr status        # what is running, which backend, where the database is
 ```
 
 ### Copying files and folders from the command line
 
 ```sh
-suchi -c file1 folder1   # copy files/folders to the clipboard (and history)
-suchi -x file1 folder1   # cut them (paste moves the sources)
-suchi -p                 # paste the clipboard's files into the current directory
+kiipr -c file1 folder1   # copy files/folders to the clipboard (and history)
+kiipr -x file1 folder1   # cut them (paste moves the sources)
+kiipr -p                 # paste the clipboard's files into the current directory
 ```
 
 Copied and cut paths show up in the Clip tab like any other entry. Select one
-and press `Enter` to put it back on the clipboard, then run `suchi -p` wherever
-you want the files. `suchi -p` also prints text and writes image bytes to
-stdout when redirected (`suchi -p > image.png`).
+and press `Enter` to put it back on the clipboard, then run `kiipr -p` wherever
+you want the files. `kiipr -p` also prints text and writes image bytes to
+stdout when redirected (`kiipr -p > image.png`).
 
-**One window at a time:** opening a new `suchi` closes the one that is already open, so a key binding such as
-`footclient -W 80x30 suchi` never piles up windows. (An open window that is busy running a command snippet closes
-when the command finishes.) Use `suchi --allow-multiple` to opt out.
+**One window at a time:** opening a new `kiipr` closes the one that is already open, so a key binding such as
+`footclient -W 80x30 kiipr` never piles up windows. (An open window that is busy running a command snippet closes
+when the command finishes.) Use `kiipr --allow-multiple` to opt out.
 
-Start the watcher at every login with `systemctl --user enable --now suchi` (the installer sets the unit up), or add
-`suchi daemon` to your session's autostart.
+Start the watcher at every login with `systemctl --user enable --now kiipr` (the installer sets the unit up), or add
+`kiipr daemon` to your session's autostart.
 
 ### Keys
 
@@ -90,13 +101,13 @@ Start the watcher at every login with `systemctl --user enable --now suchi` (the
 | `i` | search (`Esc` leaves it) · `f` toggles fuzzy matching |
 | `Enter` | copy the highlighted entry **and close** |
 | `d` `d` | delete the highlighted entry: press `d` twice (the first press only asks) |
-| `u` | undo the last delete; press again for the one before, until you close suchi |
+| `u` | undo the last delete; press again for the one before, until you close kiipr |
 | `?` | help · `Esc` closes a popup, or quits |
 
 **Clip tab:** `e` opens the entry (read-only) · `p` pins it to the top.
 **Snip tab:** `a` adds a snippet · `e` edits it · `r` runs a command snippet.
 
-The `e` popup scrolls with `j`/`k`/`↑`/`↓`/`PgUp`/`PgDn` or the mouse wheel; `Enter` copies and closes suchi, `Esc` closes the popup.
+The `e` popup scrolls with `j`/`k`/`↑`/`↓`/`PgUp`/`PgDn` or the mouse wheel; `Enter` copies and closes kiipr, `Esc` closes the popup.
 
 ### Mouse
 
@@ -126,7 +137,7 @@ theme; very large entries (over about 100 KB or 3,000 lines) get line numbers wi
 
 ## Images and files
 
-suchi records what is on the clipboard, not only text:
+kiipr records what is on the clipboard, not only text:
 
 - **Images** (screenshots, "copy image" in a browser) are stored in the database and shown as a generated file name
   like `image-20261107-153012.png`.
@@ -149,7 +160,7 @@ the oldest unpinned ones go first. Entries a password manager marks as secret ar
 | foot, Konsole, mlterm, Contour | sixel |
 | everything else, **tmux**, SSH, Linux console | colour half-blocks ("ANSI art", like `chafa`) — works everywhere |
 
-Detection is automatic. Force a protocol with `SUCHI_IMAGE=kitty|iterm2|sixel|blocks|none`.
+Detection is automatic. Force a protocol with `KIIPR_IMAGE=kitty|iterm2|sixel|blocks|none`.
 Multiplexers like tmux get blocks by default because they do not pass graphics through.
 
 ## Snippets
@@ -160,14 +171,14 @@ A snippet has a **name** (names need not be unique), a **text** and a **type**:
 ![Snip tab](docs/snip.png)
 
 Deleting a snippet works like a clip (`d` twice, `u` to undo). `Enter` copies a snippet's text. `r` (or a click) runs a command snippet in your shell, shows its output, and
-returns to suchi when you press Enter. A snippet you copy never shows up in the Clip tab.
+returns to kiipr when you press Enter. A snippet you copy never shows up in the Clip tab.
 
 ```sh
-suchi get mail                    # print a snippet: ssh host "$(suchi get deploy)"
-echo "some text" | suchi add      # put text in the history (works anywhere, incl. TTYs)
-suchi -s                          # open the Snip tab directly
-suchi clear [--all]               # delete history (pinned entries stay unless --all)
-suchi import [history.json]       # import the old Python version's history
+kiipr get mail                    # print a snippet: ssh host "$(kiipr get deploy)"
+echo "some text" | kiipr add      # put text in the history (works anywhere, incl. TTYs)
+kiipr -s                          # open the Snip tab directly
+kiipr clear [--all]               # delete history (pinned entries stay unless --all)
+kiipr import [history.json]       # import the old Python version's history
 ```
 
 ## How it talks to your clipboard
@@ -176,18 +187,18 @@ suchi import [history.json]       # import the old Python version's history
 |---|---|---|
 | **Wayland** (sway, Hyprland, KDE Plasma, river, labwc, COSMIC…) | native protocol client, no `wl-clipboard` | native; a tiny detached helper serves the selection until something else is copied |
 | **X11** and XWayland | native XFixes events (instant, no polling) | `xclip` (text, images, files) or `xsel` (text) |
-| **TTY** (Linux console, SSH) | nothing to watch — feed it with `suchi add` | OSC 52 if the terminal supports it, otherwise the line is typed into your prompt (console only, single line) or printed |
+| **TTY** (Linux console, SSH) | nothing to watch — feed it with `kiipr add` | OSC 52 if the terminal supports it, otherwise the line is typed into your prompt (console only, single line) or printed |
 
-**GNOME on Wayland** has no background-clipboard protocol, so suchi uses XWayland there (needs `xclip`).
-`suchi status` shows what it picked.
+**GNOME on Wayland** has no background-clipboard protocol, so kiipr uses XWayland there (needs `xclip`).
+`kiipr status` shows what it picked.
 
 ### Pasting in a TTY
 
-A text console has no paste buffer, so bind a key to `suchi -p`. On a TTY it
+A text console has no paste buffer, so bind a key to `kiipr -p`. On a TTY it
 opens the picker and prints the chosen entry. For bash (`~/.bashrc`):
 
 ```sh
-bind -x '"\C-x\C-v": __s=$(suchi -p); READLINE_LINE="${READLINE_LINE:0:READLINE_POINT}${__s}${READLINE_LINE:READLINE_POINT}"; READLINE_POINT=$((READLINE_POINT+${#__s}))'
+bind -x '"\C-x\C-v": __s=$(kiipr -p); READLINE_LINE="${READLINE_LINE:0:READLINE_POINT}${__s}${READLINE_LINE:READLINE_POINT}"; READLINE_POINT=$((READLINE_POINT+${#__s}))'
 ```
 
 ## Configuration
@@ -196,38 +207,38 @@ Flags (before or after the command) and environment variables; defaults in brack
 
 | Flag | Env | |
 |---|---|---|
-| `--db PATH` | `SUCHI_DB` | database file [`~/.local/share/suchi/suchi.db`] |
-| `--limit N` | `SUCHI_LIMIT` | history size, pinned entries exempt [500] |
-| `--max-size BYTES` | `SUCHI_MAX_BYTES` | skip bigger clipboard text [1 MiB] |
-| `--max-media BYTES` | `SUCHI_MAX_MEDIA` | skip bigger images [16 MiB] |
-| `--backend` | `SUCHI_BACKEND` | `auto`, `wayland`, `x11`, `tty` [auto] |
+| `--db PATH` | `KIIPR_DB` | database file [`~/.local/share/kiipr/kiipr.db`] |
+| `--limit N` | `KIIPR_LIMIT` | history size, pinned entries exempt [500] |
+| `--max-size BYTES` | `KIIPR_MAX_BYTES` | skip bigger clipboard text [1 MiB] |
+| `--max-media BYTES` | `KIIPR_MAX_MEDIA` | skip bigger images [16 MiB] |
+| `--backend` | `KIIPR_BACKEND` | `auto`, `wayland`, `x11`, `tty` [auto] |
 | `-s, --selection` | | open the interface on the Snip tab |
 | `-c, --copy PATH...` | | copy files/folders to the clipboard and history |
 | `-x, --cut PATH...` | | cut files/folders to the clipboard and history |
 | `-p, --paste` | | paste files/folders into the current directory |
 | `--allow-multiple` | | do not close an interface that is already open |
-| | `SUCHI_IMAGE` | image protocol, see above |
+| | `KIIPR_IMAGE` | image protocol, see above |
 
-The daemon logs to `~/.local/state/suchi/suchi.log`. The database is created `0600` in a `0700` directory.
+The daemon logs to `~/.local/state/kiipr/kiipr.log`. The database is created `0600` in a `0700` directory.
 
 ## Troubleshooting
 
 - **`migration 1: ... table clips already exists`** — fixed in 0.5: the daemon and the UI starting at the same moment
   raced to create the database. Upgrading repairs an affected database in place; nothing is lost.
-- **Nothing is recorded on GNOME/Wayland or X11** — install `xclip` (`sudo apt install xclip`), then `suchi stop && suchi daemon`.
-- **Pictures show as colour blocks** — that is the universal fallback. Check `echo $TERM $TERM_PROGRAM` and set `SUCHI_IMAGE` if your terminal supports a graphics protocol.
+- **Nothing is recorded on GNOME/Wayland or X11** — install `xclip` (`sudo apt install xclip`), then `kiipr stop && kiipr daemon`.
+- **Pictures show as colour blocks** — that is the universal fallback. Check `echo $TERM $TERM_PROGRAM` and set `KIIPR_IMAGE` if your terminal supports a graphics protocol.
 - **A window did not close when I opened a new one** — fixed in 0.5.2 (a shutdown deadlock when windows were opened in quick succession). If a window is busy running a command snippet it closes when the command ends.
 - **Mouse does nothing** — your terminal or multiplexer may not forward mouse events (tmux: `set -g mouse on`).
 
 ## Code layout
 
 ```
-cmd/suchi/              entry point (calls internal/cli)
+cmd/kiipr/              entry point (calls internal/cli)
 internal/cli/           command line: UI, daemon, stop, status, add, get, import, clear
 internal/config/        XDG paths, limits, env overrides
 internal/store/         SQLite: race-safe migrations, clips (text/image/file), snippets
 internal/clipboard/     backends: wayland (wire protocol), x11 (XFixes + xclip), tty (OSC 52)
-internal/fileop/        copy/move files and folders for `suchi -p`
+internal/fileop/        copy/move files and folders for `kiipr -p`
 internal/daemon/        watcher loop, detached start
 internal/pidlock/       flock-based single-instance lock (daemon, and "newest window wins" for the UI)
 internal/preview/       image decoding, kitty/iTerm2/sixel/half-block rendering, file types

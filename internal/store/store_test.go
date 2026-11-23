@@ -15,7 +15,7 @@ import (
 
 func open(t *testing.T) (*Store, string) {
 	t.Helper()
-	path := filepath.Join(t.TempDir(), "data", "suchi.db")
+	path := filepath.Join(t.TempDir(), "data", "kiipr.db")
 	s, err := Open(path)
 	if err != nil {
 		t.Fatal(err)
@@ -52,7 +52,7 @@ func eq(a, b []string) bool {
 // Regression: starting the daemon and the UI at the same moment on a fresh
 // database used to fail with "table clips already exists".
 func TestOpenFreshDBConcurrently(t *testing.T) {
-	path := filepath.Join(t.TempDir(), "suchi.db")
+	path := filepath.Join(t.TempDir(), "kiipr.db")
 	var wg sync.WaitGroup
 	errs := make(chan error, 16)
 	for i := 0; i < 12; i++ {
@@ -77,7 +77,7 @@ func TestOpenFreshDBConcurrently(t *testing.T) {
 // Regression: a database whose tables exist but whose version was never
 // recorded (what the failing user had) must open, keep its data and upgrade.
 func TestOpenHealsDatabaseWithoutVersion(t *testing.T) {
-	path := filepath.Join(t.TempDir(), "suchi.db")
+	path := filepath.Join(t.TempDir(), "kiipr.db")
 	raw, err := sql.Open(driverName, path)
 	if err != nil {
 		t.Fatal(err)
@@ -439,7 +439,7 @@ func TestIgnoreNextKeepsSnippetCopiesOutOfHistory(t *testing.T) {
 		t.Fatal(err)
 	}
 	if ok, _ := s.AddClip(ctx, "me@example.com", 100, 1<<20); ok {
-		t.Fatal("the copy suchi itself made must not become history")
+		t.Fatal("the copy kiipr itself made must not become history")
 	}
 	if ok, _ := s.AddClip(ctx, "me@example.com", 100, 1<<20); !ok {
 		t.Fatal("the marker is single-use: copying the same text later is normal history")

@@ -324,7 +324,7 @@ func (w *wlConn) setup() error {
 	if _, seat := w.globals["wl_seat"]; iface == "" || !seat {
 		return errors.New("this Wayland compositor has no background clipboard protocol " +
 			"(ext-data-control / wlr-data-control); GNOME/Mutter is like this - " +
-			"suchi uses XWayland (x11 backend) instead when available")
+			"kiipr uses XWayland (x11 backend) instead when available")
 	}
 	seat, _, err := w.bind("wl_seat", 1)
 	if err != nil {

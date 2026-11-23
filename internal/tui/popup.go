@@ -14,9 +14,9 @@ import (
 	"github.com/charmbracelet/lipgloss"
 	zone "github.com/lrstanley/bubblezone"
 
-	"github.com/dip-bash/suchi/internal/highlight"
-	"github.com/dip-bash/suchi/internal/preview"
-	"github.com/dip-bash/suchi/internal/store"
+	"github.com/dip-bash/kiipr/internal/highlight"
+	"github.com/dip-bash/kiipr/internal/preview"
+	"github.com/dip-bash/kiipr/internal/store"
 )
 
 // Limits for previews of copied files.
@@ -200,7 +200,7 @@ func (m *model) buildFilesPopup(p *popup, c clipItem) {
 
 func (m *model) loadPicture(p *popup, data []byte) {
 	if m.proto == preview.None {
-		p.imgNote = "previews are turned off (SUCHI_IMAGE=none)"
+		p.imgNote = "previews are turned off (KIIPR_IMAGE=none)"
 		return
 	}
 	img, _, err := preview.Decode(data)

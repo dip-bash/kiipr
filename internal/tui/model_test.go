@@ -20,9 +20,9 @@ import (
 	zone "github.com/lrstanley/bubblezone"
 	"github.com/muesli/termenv"
 
-	"github.com/dip-bash/suchi/internal/preview"
-	"github.com/dip-bash/suchi/internal/store"
-	"github.com/dip-bash/suchi/internal/textutil"
+	"github.com/dip-bash/kiipr/internal/preview"
+	"github.com/dip-bash/kiipr/internal/store"
+	"github.com/dip-bash/kiipr/internal/textutil"
 )
 
 var limits = store.Limits{Count: 100, MaxText: 1 << 20, MaxMedia: 1 << 22, MediaBudget: 1 << 28}
@@ -31,7 +31,7 @@ func newTestModelProto(t *testing.T, proto preview.Protocol, clips ...string) (*
 	t.Helper()
 	t.Setenv("LC_ALL", "C.UTF-8") // unicode glyphs; the ASCII layout is checked separately
 	t.Setenv("TERM", "xterm-256color")
-	st, err := store.Open(filepath.Join(t.TempDir(), "suchi.db"))
+	st, err := store.Open(filepath.Join(t.TempDir(), "kiipr.db"))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -247,7 +247,7 @@ func TestSnippetsNeverAppearInTheClipTab(t *testing.T) {
 	if cmd := press(m, "enter"); !isQuit(cmd) || m.result.Text != "me@example.com" {
 		t.Fatalf("result=%+v", m.result)
 	}
-	// The daemon sees the snippet text arrive on the clipboard after suchi copied it...
+	// The daemon sees the snippet text arrive on the clipboard after kiipr copied it...
 	if ok, _ := m.st.AddClip(context.Background(), "me@example.com", 100, 1<<20); ok {
 		t.Fatal("...and must not record it as history")
 	}
@@ -585,7 +585,7 @@ func TestPreviewCanBeTurnedOff(t *testing.T) {
 	addImage(t, m, "pic.png", pngBytes(40, 40, color.NRGBA{}))
 	press(m, "e")
 	if m.pop.img != nil || !strings.Contains(view(m), "previews are turned off") {
-		t.Fatal("SUCHI_IMAGE=none must show details only")
+		t.Fatal("KIIPR_IMAGE=none must show details only")
 	}
 }
 

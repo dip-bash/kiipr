@@ -98,7 +98,7 @@ func LabelForMime(mime string) string {
 	return "IMG"
 }
 
-// DecodableImage reports whether suchi can draw this file extension.
+// DecodableImage reports whether kiipr can draw this file extension.
 func DecodableImage(path string) bool {
 	switch strings.ToLower(strings.TrimPrefix(filepath.Ext(path), ".")) {
 	case "png", "jpg", "jpeg", "gif", "webp", "bmp", "tif", "tiff":

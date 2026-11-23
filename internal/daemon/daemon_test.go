@@ -9,7 +9,7 @@ import (
 )
 
 func TestSingleInstanceLock(t *testing.T) {
-	pid := filepath.Join(t.TempDir(), "state", "suchi.pid")
+	pid := filepath.Join(t.TempDir(), "state", "kiipr.pid")
 
 	if running, _ := Status(pid); running {
 		t.Fatal("nothing holds the lock yet")
@@ -43,7 +43,7 @@ func TestSingleInstanceLock(t *testing.T) {
 }
 
 func TestStopWhenNotRunning(t *testing.T) {
-	stopped, err := Stop(filepath.Join(t.TempDir(), "suchi.pid"))
+	stopped, err := Stop(filepath.Join(t.TempDir(), "kiipr.pid"))
 	if err != nil || stopped {
 		t.Fatalf("stopped=%v err=%v", stopped, err)
 	}

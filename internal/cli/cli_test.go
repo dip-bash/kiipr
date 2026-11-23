@@ -8,19 +8,19 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/dip-bash/suchi/internal/store"
+	"github.com/dip-bash/kiipr/internal/store"
 )
 
-// sandbox points suchi at a scratch database and state dir and hides any
+// sandbox points kiipr at a scratch database and state dir and hides any
 // real display server.
 func sandbox(t *testing.T) string {
 	t.Helper()
 	dir := t.TempDir()
-	db := filepath.Join(dir, "suchi.db")
-	t.Setenv("SUCHI_DB", db)
+	db := filepath.Join(dir, "kiipr.db")
+	t.Setenv("KIIPR_DB", db)
 	t.Setenv("XDG_STATE_HOME", filepath.Join(dir, "state"))
 	t.Setenv("XDG_CACHE_HOME", filepath.Join(dir, "cache"))
-	t.Setenv("SUCHI_BACKEND", "auto")
+	t.Setenv("KIIPR_BACKEND", "auto")
 	t.Setenv("WAYLAND_DISPLAY", "")
 	t.Setenv("DISPLAY", "")
 	return db
@@ -156,10 +156,10 @@ func TestUsageAndErrors(t *testing.T) {
 	if code, out, _ := run(t, "", "--help"); code != 0 || !strings.Contains(out, "Usage:") ||
 		!strings.Contains(out, "--allow-multiple") || !strings.Contains(out, "--paste") ||
 		!strings.Contains(out, "--copy") || !strings.Contains(out, "--cut") ||
-		!strings.Contains(out, "one suchi interface") {
+		!strings.Contains(out, "one kiipr interface") {
 		t.Fatalf("help: code=%d", code)
 	}
-	if code, out, _ := run(t, "", "version"); code != 0 || !strings.HasPrefix(out, "suchi ") {
+	if code, out, _ := run(t, "", "version"); code != 0 || !strings.HasPrefix(out, "kiipr ") {
 		t.Fatalf("version: code=%d out=%q", code, out)
 	}
 	if code, _, e := run(t, "", "bogus"); code != 2 || !strings.Contains(e, "unknown command") {
@@ -176,7 +176,7 @@ func TestUsageAndErrors(t *testing.T) {
 func TestDaemonRefusesWithoutDisplayServer(t *testing.T) {
 	sandbox(t)
 	code, _, e := run(t, "", "daemon")
-	if code != 1 || !strings.Contains(e, "no display server") || !strings.Contains(e, "suchi add") {
+	if code != 1 || !strings.Contains(e, "no display server") || !strings.Contains(e, "kiipr add") {
 		t.Fatalf("code=%d err=%q", code, e)
 	}
 }

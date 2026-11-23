@@ -15,7 +15,7 @@ import (
 )
 
 // A tiny X11 wire-protocol client: just enough to connect, intern the
-// CLIPBOARD atom and subscribe to XFixes SelectionNotify events, so suchi
+// CLIPBOARD atom and subscribe to XFixes SelectionNotify events, so kiipr
 // needs neither libX11 nor cgo and wakes up instantly on a copy.
 
 var le = binary.LittleEndian

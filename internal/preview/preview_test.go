@@ -248,9 +248,11 @@ func TestDetect(t *testing.T) {
 		{"konsole", env("TERM", "xterm-256color", "KONSOLE_VERSION", "230800"), Sixel},
 		{"linux console", env("TERM", "linux"), Blocks},
 		{"tmux inside kitty", env("TERM", "tmux-256color", "TMUX", "/tmp/tmux", "KITTY_WINDOW_ID", "3"), Blocks},
-		{"override wins", env("TERM", "xterm-256color", "SUCHI_IMAGE", "Sixel"), Sixel},
-		{"override none", env("TERM", "xterm-kitty", "SUCHI_IMAGE", "none"), None},
-		{"bad override ignored", env("TERM", "xterm-kitty", "KITTY_WINDOW_ID", "1", "SUCHI_IMAGE", "bogus"), Kitty},
+		{"override wins", env("TERM", "xterm-256color", "KIIPR_IMAGE", "Sixel"), Sixel},
+		{"override none", env("TERM", "xterm-kitty", "KIIPR_IMAGE", "none"), None},
+		{"bad override ignored", env("TERM", "xterm-kitty", "KITTY_WINDOW_ID", "1", "KIIPR_IMAGE", "bogus"), Kitty},
+		{"legacy override", env("TERM", "xterm-256color", "SUCHI_IMAGE", "sixel"), Sixel},
+		{"new override beats legacy", env("TERM", "xterm-256color", "KIIPR_IMAGE", "kitty", "SUCHI_IMAGE", "sixel"), Kitty},
 	}
 	for _, c := range cases {
 		if got := Detect(c.env); got != c.want {

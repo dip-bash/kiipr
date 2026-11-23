@@ -1,4 +1,4 @@
-// Package tui is suchi's terminal interface: a Clip tab with the clipboard
+// Package tui is kiipr's terminal interface: a Clip tab with the clipboard
 // history (text, images, copied files) and a Snip tab with snippets (a text
 // expander), switched with Tab or the mouse.
 package tui
@@ -14,9 +14,9 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	zone "github.com/lrstanley/bubblezone"
 
-	"github.com/dip-bash/suchi/internal/preview"
-	"github.com/dip-bash/suchi/internal/store"
-	"github.com/dip-bash/suchi/internal/textutil"
+	"github.com/dip-bash/kiipr/internal/preview"
+	"github.com/dip-bash/kiipr/internal/store"
+	"github.com/dip-bash/kiipr/internal/textutil"
 )
 
 type tabID int
@@ -122,7 +122,7 @@ type model struct {
 	flash      string
 	flashUntil time.Time
 	armed      armed      // the entry waiting for a second "d" to be deleted
-	undo       []undoItem // deleted entries, newest last, restorable with "u" until suchi closes
+	undo       []undoItem // deleted entries, newest last, restorable with "u" until kiipr closes
 
 	pill, scroll spring
 

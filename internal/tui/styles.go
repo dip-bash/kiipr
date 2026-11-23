@@ -6,7 +6,7 @@ import (
 
 	"github.com/charmbracelet/lipgloss"
 
-	"github.com/dip-bash/suchi/internal/preview"
+	"github.com/dip-bash/kiipr/internal/preview"
 )
 
 // ac builds a colour for light and dark terminal backgrounds. Lip Gloss

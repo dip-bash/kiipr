@@ -136,7 +136,7 @@ func (x X11) Set(ctx context.Context, it Item, sel Selection) error {
 	}
 	cmd.Stdin = bytes.NewReader(body)
 	// Own session: the process that keeps serving the selection must survive
-	// this terminal closing (SIGHUP) just like it survives suchi exiting.
+	// this terminal closing (SIGHUP) just like it survives kiipr exiting.
 	cmd.SysProcAttr = &syscall.SysProcAttr{Setsid: true}
 	if err := cmd.Run(); err != nil {
 		if ctx.Err() != nil {

@@ -8,7 +8,7 @@ import (
 	"github.com/charmbracelet/lipgloss"
 	zone "github.com/lrstanley/bubblezone"
 
-	"github.com/dip-bash/suchi/internal/store"
+	"github.com/dip-bash/kiipr/internal/store"
 )
 
 const (

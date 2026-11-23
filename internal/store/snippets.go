@@ -112,7 +112,7 @@ func (s *Store) DeleteSnippet(ctx context.Context, id int64) error {
 }
 
 // ImportLegacyJSON imports a history.json written by the original Python
-// version of suchi. Existing entries are kept; duplicates are bumped.
+// version of kiipr. Existing entries are kept; duplicates are bumped.
 func (s *Store) ImportLegacyJSON(ctx context.Context, path string, limit, maxBytes int) (imported int, err error) {
 	raw, err := os.ReadFile(path)
 	if err != nil {
@@ -125,7 +125,7 @@ func (s *Store) ImportLegacyJSON(ctx context.Context, path string, limit, maxByt
 		UsedAt   float64 `json:"usedAt"`
 	}
 	if err := json.Unmarshal(raw, &items); err != nil {
-		return 0, fmt.Errorf("%s is not a suchi history file: %w", path, err)
+		return 0, fmt.Errorf("%s is not a clipboard history export: %w", path, err)
 	}
 	tx, err := s.db.BeginTx(ctx, nil)
 	if err != nil {

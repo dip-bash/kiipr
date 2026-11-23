@@ -42,7 +42,7 @@ func (TTY) Set(_ context.Context, it Item, _ Selection) error {
 	term := os.Getenv("TERM")
 	if term != "" && term != "linux" && term != "dumb" && len(text) <= maxOSC52 {
 		if err := osc52(text); err == nil {
-			fmt.Fprintln(os.Stderr, "suchi: sent to the terminal clipboard (OSC 52; needs terminal support)")
+			fmt.Fprintln(os.Stderr, "kiipr: sent to the terminal clipboard (OSC 52; needs terminal support)")
 			return nil
 		}
 	}

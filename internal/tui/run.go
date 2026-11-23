@@ -13,8 +13,8 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	zone "github.com/lrstanley/bubblezone"
 
-	"github.com/dip-bash/suchi/internal/preview"
-	"github.com/dip-bash/suchi/internal/store"
+	"github.com/dip-bash/kiipr/internal/preview"
+	"github.com/dip-bash/kiipr/internal/store"
 )
 
 // Options configure Run.
@@ -26,7 +26,7 @@ type Options struct {
 }
 
 // Run shows the interface and returns what the user chose. It works even
-// when stdin or stdout are pipes (`$(suchi -p)`), by talking to /dev/tty.
+// when stdin or stdout are pipes (`$(kiipr -p)`), by talking to /dev/tty.
 func Run(ctx context.Context, st *store.Store, opts Options) (Result, error) {
 	restore, err := attachTTY()
 	if err != nil {
@@ -59,7 +59,7 @@ func Run(ctx context.Context, st *store.Store, opts Options) (Result, error) {
 		_, _ = io.WriteString(opts.Out, preview.KittyDelete())
 	}
 	if err != nil {
-		if ctx.Err() != nil { // told to close (a newer suchi opened): leave quietly
+		if ctx.Err() != nil { // told to close (a newer kiipr opened): leave quietly
 			return Result{}, nil
 		}
 		return Result{}, fmt.Errorf("terminal UI: %w", err)
@@ -69,7 +69,7 @@ func Run(ctx context.Context, st *store.Store, opts Options) (Result, error) {
 
 // bridgeSignals asks the program to quit when a termination signal arrives
 // (or ctx is cancelled). SIGINT is ignored while a command snippet runs in the
-// foreground: Ctrl+C then belongs to that command, not to suchi. SIGTERM and
+// foreground: Ctrl+C then belongs to that command, not to kiipr. SIGTERM and
 // SIGHUP are never ignored; if a command is running the quit simply waits
 // until it finishes. The returned function stops the bridge.
 func bridgeSignals(ctx context.Context, quit func(), sigc <-chan os.Signal, execing *atomic.Bool) (stop func()) {
@@ -110,7 +110,7 @@ func attachTTY() (restore func(), err error) {
 	}
 	tty, err := os.OpenFile("/dev/tty", os.O_RDWR, 0)
 	if err != nil {
-		return nil, fmt.Errorf("suchi's interface needs a terminal (no /dev/tty): %w", err)
+		return nil, fmt.Errorf("kiipr's interface needs a terminal (no /dev/tty): %w", err)
 	}
 	for fd := 0; fd < 2; fd++ {
 		if !needs[fd] {

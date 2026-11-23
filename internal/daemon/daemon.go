@@ -16,17 +16,17 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/dip-bash/suchi/internal/clipboard"
-	"github.com/dip-bash/suchi/internal/config"
-	"github.com/dip-bash/suchi/internal/pidlock"
-	"github.com/dip-bash/suchi/internal/store"
+	"github.com/dip-bash/kiipr/internal/clipboard"
+	"github.com/dip-bash/kiipr/internal/config"
+	"github.com/dip-bash/kiipr/internal/pidlock"
+	"github.com/dip-bash/kiipr/internal/store"
 )
 
 // ErrRunning is returned when another daemon already holds the lock.
 type ErrRunning struct{ PID int }
 
 func (e ErrRunning) Error() string {
-	return fmt.Sprintf("daemon is already running (pid %d); stop it with `suchi stop`", e.PID)
+	return fmt.Sprintf("daemon is already running (pid %d); stop it with `kiipr stop`", e.PID)
 }
 
 // Lock is the single-instance guard.
@@ -192,7 +192,7 @@ func Backend(cfg config.Config) (clipboard.Backend, error) {
 	}
 	if b.Name() == "tty" {
 		msg := "no display server to watch (Linux console / SSH): a terminal has no clipboard. " +
-			"Feed the history with `echo text | suchi add` instead"
+			"Feed the history with `echo text | kiipr add` instead"
 		if problem != "" {
 			msg = problem + "\n" + msg
 		}

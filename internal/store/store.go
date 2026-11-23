@@ -19,7 +19,7 @@ import (
 // ErrInvalid is returned (wrapped) when user input fails validation.
 var ErrInvalid = errors.New("invalid input")
 
-// Store is a handle on the suchi database.
+// Store is a handle on the kiipr database.
 type Store struct {
 	db *sql.DB
 }
@@ -27,7 +27,7 @@ type Store struct {
 // migrations are applied in order inside one exclusive transaction; the
 // applied versions are recorded in the schema_migrations table. Never edit an
 // existing entry, only append. Every statement is idempotent, so a database
-// left half-migrated by an older suchi heals itself.
+// left half-migrated by an older kiipr heals itself.
 var migrations = []string{
 	// 1: text history and snippets
 	`CREATE TABLE IF NOT EXISTS clips (
@@ -72,7 +72,7 @@ var migrations = []string{
 	CREATE UNIQUE INDEX clips_uq_text ON clips (kind, text) WHERE kind <> 'image';
 	CREATE UNIQUE INDEX clips_uq_hash ON clips (hash) WHERE kind = 'image';`,
 
-	// 3: texts suchi itself just put on the clipboard (a chosen snippet) that
+	// 3: texts kiipr itself just put on the clipboard (a chosen snippet) that
 	// the daemon must not record as history.
 	`CREATE TABLE IF NOT EXISTS ignored (
 		hash       TEXT    PRIMARY KEY,
@@ -124,7 +124,7 @@ func Open(path string) (*Store, error) {
 func (s *Store) Close() error { return s.db.Close() }
 
 // migrate brings the schema up to date. BEGIN IMMEDIATE takes the write lock
-// before the version is read, so several suchi processes opening a fresh
+// before the version is read, so several kiipr processes opening a fresh
 // database at once (daemon, UI, systemd unit) queue up on the busy timeout
 // instead of all trying to run the same migration.
 func (s *Store) migrate(ctx context.Context) (err error) {
@@ -151,7 +151,7 @@ func (s *Store) migrate(ctx context.Context) (err error) {
 		return fmt.Errorf("read schema version: %w", err)
 	}
 	if v > len(migrations) {
-		return fmt.Errorf("database schema v%d is newer than this suchi (v%d); upgrade suchi", v, len(migrations))
+		return fmt.Errorf("database schema v%d is newer than this kiipr (v%d); upgrade kiipr", v, len(migrations))
 	}
 	for i := v; i < len(migrations); i++ {
 		if _, err = conn.ExecContext(ctx, migrations[i]); err != nil {

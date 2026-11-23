@@ -4,7 +4,7 @@
 //   - wayland: native protocol client (ext-data-control / wlr-data-control),
 //     no wl-clipboard needed. Works on sway, Hyprland, KDE Plasma, river,
 //     labwc, COSMIC... but not on GNOME/Mutter, which offers no background
-//     clipboard protocol (suchi then falls back to XWayland via x11).
+//     clipboard protocol (kiipr then falls back to XWayland via x11).
 //   - x11: native XFixes watcher; xclip or xsel read and write the selection.
 //   - tty: no display server (Linux console, SSH). There is nothing to watch;
 //     choosing an entry uses OSC 52 or types it into the prompt.
@@ -104,9 +104,9 @@ func Deliver(ctx context.Context, b Backend, problem string, it Item, sel Select
 		if err == nil {
 			return nil
 		}
-		fmt.Fprintf(errw, "suchi: %v\n", err)
+		fmt.Fprintf(errw, "kiipr: %v\n", err)
 	} else if problem != "" {
-		fmt.Fprintf(errw, "suchi: %s\n", problem)
+		fmt.Fprintf(errw, "kiipr: %s\n", problem)
 	}
 	if it.Kind == KindImage {
 		return errors.New("an image cannot be pasted into a terminal; use a graphical session")
@@ -116,8 +116,8 @@ func Deliver(ctx context.Context, b Backend, problem string, it Item, sel Select
 	}
 	text := it.Plain()
 	if isTerminal(out) {
-		fmt.Fprintln(errw, "suchi: no clipboard available here; entry printed below "+
-			"(use `suchi -p` with a shell binding to paste it, see README)")
+		fmt.Fprintln(errw, "kiipr: no clipboard available here; entry printed below "+
+			"(use `kiipr -p` with a shell binding to paste it, see README)")
 		_, err := fmt.Fprintln(out, SanitizeForTerminal(text))
 		return err
 	}

@@ -1,4 +1,4 @@
-// Package cli parses the command line and runs suchi's commands.
+// Package cli parses the command line and runs kiipr's commands.
 package cli
 
 import (
@@ -16,32 +16,32 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/dip-bash/suchi/internal/clipboard"
-	"github.com/dip-bash/suchi/internal/config"
-	"github.com/dip-bash/suchi/internal/daemon"
-	"github.com/dip-bash/suchi/internal/fileop"
-	"github.com/dip-bash/suchi/internal/pidlock"
-	"github.com/dip-bash/suchi/internal/store"
-	"github.com/dip-bash/suchi/internal/tui"
-	"github.com/dip-bash/suchi/internal/version"
+	"github.com/dip-bash/kiipr/internal/clipboard"
+	"github.com/dip-bash/kiipr/internal/config"
+	"github.com/dip-bash/kiipr/internal/daemon"
+	"github.com/dip-bash/kiipr/internal/fileop"
+	"github.com/dip-bash/kiipr/internal/pidlock"
+	"github.com/dip-bash/kiipr/internal/store"
+	"github.com/dip-bash/kiipr/internal/tui"
+	"github.com/dip-bash/kiipr/internal/version"
 )
 
-const usage = `suchi - clipboard history and snippets for the terminal
+const usage = `kiipr - clipboard history and snippets for the terminal
 
 Usage:
-  suchi [flags]         open the interface (Tab switches Clipboard / Snippets)
-  suchi -s              open the interface on the Snippets tab
-  suchi -c PATH...      copy files/folders to the clipboard and history
-  suchi -x PATH...      cut files/folders to the clipboard and history
-  suchi -p              paste the clipboard's files into the current directory
-  suchi daemon          start the background clipboard watcher
-  suchi stop            stop the watcher
-  suchi status          show the watcher, backend and database
-  suchi add [TEXT]      add TEXT (or stdin) to the history
-  suchi get NAME        print the text of a snippet
-  suchi import [FILE]   import history.json from the old Python version
-  suchi clear [--all]   delete the history (pinned entries stay unless --all)
-  suchi version
+  kiipr [flags]         open the interface (Tab switches Clipboard / Snippets)
+  kiipr -s              open the interface on the Snippets tab
+  kiipr -c PATH...      copy files/folders to the clipboard and history
+  kiipr -x PATH...      cut files/folders to the clipboard and history
+  kiipr -p              paste the clipboard's files into the current directory
+  kiipr daemon          start the background clipboard watcher
+  kiipr stop            stop the watcher
+  kiipr status          show the watcher, backend and database
+  kiipr add [TEXT]      add TEXT (or stdin) to the history
+  kiipr get NAME        print the text of a snippet
+  kiipr import [FILE]   import history.json from the old Python version
+  kiipr clear [--all]   delete the history (pinned entries stay unless --all)
+  kiipr version
 
 Flags (all commands):
   --db PATH         database file   (default: %s)
@@ -60,8 +60,8 @@ File clipboard:
   -p, --paste        paste files/folders into the current directory
                      (text is printed; image bytes go to stdout when redirected)
 
-Only one suchi interface runs at a time: opening a new one closes the previous
-one, so a key binding like "footclient -W 80x30 suchi" never piles up windows.
+Only one kiipr interface runs at a time: opening a new one closes the previous
+one, so a key binding like "footclient -W 80x30 kiipr" never piles up windows.
 `
 
 // env carries the process streams so commands are testable.
@@ -71,7 +71,7 @@ type env struct {
 	stderr io.Writer
 }
 
-// Run executes suchi with args (without the program name) and returns the exit code.
+// Run executes kiipr with args (without the program name) and returns the exit code.
 func Run(args []string, stdin io.Reader, stdout, stderr io.Writer) int {
 	e := env{stdin, stdout, stderr}
 	cfg := config.Default()
@@ -108,7 +108,7 @@ func Run(args []string, stdin io.Reader, stdout, stderr io.Writer) int {
 	case clipboard.HelperArg:
 		err = e.runServe(rest)
 	default:
-		fmt.Fprintf(stderr, "suchi: unknown command %q\n\n", cmd)
+		fmt.Fprintf(stderr, "kiipr: unknown command %q\n\n", cmd)
 		fmt.Fprintf(stderr, usage, cfg.DBPath, cfg.Limit, cfg.MaxBytes)
 		return 2
 	}
@@ -122,7 +122,7 @@ func Run(args []string, stdin io.Reader, stdout, stderr io.Writer) int {
 	case errors.Is(err, context.Canceled):
 		return 130
 	}
-	fmt.Fprintf(stderr, "suchi: %v\n", err)
+	fmt.Fprintf(stderr, "kiipr: %v\n", err)
 	return 1
 }
 
@@ -130,7 +130,7 @@ var errUsage = errors.New("usage")
 
 // flags builds a FlagSet with the options every command shares.
 func (e env) flags(name string, cfg *config.Config) *flag.FlagSet {
-	fs := flag.NewFlagSet("suchi "+name, flag.ContinueOnError)
+	fs := flag.NewFlagSet("kiipr "+name, flag.ContinueOnError)
 	fs.SetOutput(e.stderr)
 	fs.StringVar(&cfg.DBPath, "db", cfg.DBPath, "database file")
 	fs.IntVar(&cfg.Limit, "limit", cfg.Limit, "history size")
@@ -239,7 +239,7 @@ func toItem(r tui.Result) clipboard.Item {
 // clipboard, marked as a copy or a cut.
 func (e env) runFileAction(cfg config.Config, args []string, cut bool) error {
 	if len(args) == 0 {
-		return errors.New("usage: suchi -c|-x PATH...")
+		return errors.New("usage: kiipr -c|-x PATH...")
 	}
 	paths := make([]string, 0, len(args))
 	seen := make(map[string]bool, len(args))
@@ -285,9 +285,9 @@ func (e env) runFileAction(cfg config.Config, args []string, cut bool) error {
 	}
 	if err := b.Set(ctx, it, clipboard.Clipboard); err != nil {
 		if problem != "" {
-			fmt.Fprintf(e.stderr, "suchi: %s\n", problem)
+			fmt.Fprintf(e.stderr, "kiipr: %s\n", problem)
 		}
-		fmt.Fprintf(e.stderr, "suchi: saved to history, but could not set the clipboard: %v\n", err)
+		fmt.Fprintf(e.stderr, "kiipr: saved to history, but could not set the clipboard: %v\n", err)
 	}
 	verb := "copied"
 	if cut {
@@ -298,11 +298,11 @@ func (e env) runFileAction(cfg config.Config, args []string, cut bool) error {
 }
 
 // runPaste puts the clipboard's files into the current directory. Text is
-// printed and image bytes go to stdout, so `suchi -p` remains useful outside
+// printed and image bytes go to stdout, so `kiipr -p` remains useful outside
 // a graphical session.
 func (e env) runPaste(cfg config.Config, args []string) error {
 	if len(args) > 0 {
-		return fmt.Errorf("usage: suchi -p")
+		return fmt.Errorf("usage: kiipr -p")
 	}
 	ctx, stop := signalContext()
 	defer stop()
@@ -345,7 +345,7 @@ func (e env) runPaste(cfg config.Config, args []string) error {
 func (e env) printItem(it clipboard.Item) error {
 	if it.Kind == clipboard.KindImage {
 		if f, ok := e.stdout.(*os.File); ok && isChar(f) {
-			return errors.New("refusing to print image bytes to a terminal; redirect it: suchi -p > image.png")
+			return errors.New("refusing to print image bytes to a terminal; redirect it: kiipr -p > image.png")
 		}
 		_, err := e.stdout.Write(it.Data)
 		return err
@@ -373,7 +373,7 @@ func (e env) runDaemon(cfg config.Config, args []string) error {
 		if err != nil {
 			return err
 		}
-		fmt.Fprintf(e.stdout, "suchi daemon started (pid %d, %s backend)\n", pid, b.Name())
+		fmt.Fprintf(e.stdout, "kiipr daemon started (pid %d, %s backend)\n", pid, b.Name())
 		return nil
 	}
 
@@ -410,9 +410,9 @@ func (e env) runStop(cfg config.Config, args []string) error {
 		return err
 	}
 	if stopped {
-		fmt.Fprintln(e.stdout, "suchi daemon stopped")
+		fmt.Fprintln(e.stdout, "kiipr daemon stopped")
 	} else {
-		fmt.Fprintln(e.stdout, "suchi daemon is not running")
+		fmt.Fprintln(e.stdout, "kiipr daemon is not running")
 	}
 	return nil
 }
@@ -425,7 +425,7 @@ func (e env) runStatus(cfg config.Config, args []string) error {
 	if running, pid := daemon.Status(cfg.PIDPath()); running {
 		fmt.Fprintf(e.stdout, "daemon    running (pid %d)\n", pid)
 	} else {
-		fmt.Fprintln(e.stdout, "daemon    not running (start it with `suchi daemon`)")
+		fmt.Fprintln(e.stdout, "daemon    not running (start it with `kiipr daemon`)")
 	}
 	b, problem, err := clipboard.Detect(cfg.Backend)
 	switch {
@@ -465,7 +465,7 @@ func (e env) runAdd(cfg config.Config, args []string) error {
 	} else {
 		text = strings.Join(fs.Args(), " ")
 	}
-	text = strings.TrimSuffix(text, "\n") // `echo foo | suchi add` stores "foo"
+	text = strings.TrimSuffix(text, "\n") // `echo foo | kiipr add` stores "foo"
 	st, err := store.Open(cfg.DBPath)
 	if err != nil {
 		return err
@@ -487,7 +487,7 @@ func (e env) runGet(cfg config.Config, args []string) error {
 		return err
 	}
 	if fs.NArg() != 1 {
-		fmt.Fprintln(e.stderr, "usage: suchi get NAME")
+		fmt.Fprintln(e.stderr, "usage: kiipr get NAME")
 		return errUsage
 	}
 	st, err := store.Open(cfg.DBPath)
@@ -503,7 +503,7 @@ func (e env) runGet(cfg config.Config, args []string) error {
 		return fmt.Errorf("no snippet named %q", fs.Arg(0))
 	}
 	if len(found) > 1 {
-		fmt.Fprintf(e.stderr, "suchi: %d snippets are named %q; printing the first\n", len(found), fs.Arg(0))
+		fmt.Fprintf(e.stderr, "kiipr: %d snippets are named %q; printing the first\n", len(found), fs.Arg(0))
 	}
 	out := found[0].Body
 	if f, ok := e.stdout.(*os.File); ok && isChar(f) {
@@ -525,7 +525,9 @@ func (e env) runImport(cfg config.Config, args []string) error {
 			h, _ := os.UserHomeDir()
 			cache = filepath.Join(h, ".cache")
 		}
-		path = filepath.Join(cache, "suchi", "history.json") // the Python version's default
+		// The original Python version was called suchi, so its history lives
+		// in a differently named cache directory on purpose.
+		path = filepath.Join(cache, "suchi", "history.json")
 	}
 	st, err := store.Open(cfg.DBPath)
 	if err != nil {

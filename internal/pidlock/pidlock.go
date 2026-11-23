@@ -95,8 +95,8 @@ func Takeover(ctx context.Context, path string, wait time.Duration) (*Lock, erro
 			lastSignal = time.Now()
 		}
 		if time.Now().After(deadline) {
-			return nil, fmt.Errorf("the previous suchi (pid %d) did not close within %s - it may be busy "+
-				"running a command and will close when that finishes; then run suchi again", held.PID, wait)
+			return nil, fmt.Errorf("the previous kiipr (pid %d) did not close within %s - it may be busy "+
+				"running a command and will close when that finishes; then run kiipr again", held.PID, wait)
 		}
 		select {
 		case <-ctx.Done():

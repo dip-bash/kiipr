@@ -1,10 +1,10 @@
-module github.com/dip-bash/suchi
+module github.com/dip-bash/kiipr
 
 go 1.26.0
 
 // Run `go mod tidy` once after unpacking: it fetches the indirect
 // dependencies, writes go.sum and resolves modernc.org/sqlite (the pure-Go
-// SQLite driver that keeps suchi a single static binary).
+// SQLite driver that keeps kiipr a single static binary).
 require (
 	github.com/NimbleMarkets/ntcharts v0.5.2
 	github.com/alecthomas/chroma/v2 v2.27.0

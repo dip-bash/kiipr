@@ -31,11 +31,15 @@ const (
 // (as opposed to producing ordinary text).
 func (p Protocol) IsGraphic() bool { return p == Kitty || p == ITerm2 || p == Sixel }
 
-// Detect picks the best protocol from the environment. SUCHI_IMAGE
+// Detect picks the best protocol from the environment. KIIPR_IMAGE
 // (kitty, iterm2, sixel, blocks, none) overrides the guess. Multiplexers
 // get blocks because they do not pass graphics through by default.
 func Detect(getenv func(string) string) Protocol {
-	switch v := strings.ToLower(getenv("SUCHI_IMAGE")); v {
+	override := getenv("KIIPR_IMAGE")
+	if override == "" {
+		override = getenv("SUCHI_IMAGE") // the name before the rename
+	}
+	switch v := strings.ToLower(override); v {
 	case "kitty", "iterm2", "sixel", "blocks", "none":
 		return Protocol(v)
 	}

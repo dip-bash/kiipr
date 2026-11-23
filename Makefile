@@ -1,14 +1,14 @@
-# suchi
+# kiipr
 #
-#   make build                    build for this machine  -> suchi
+#   make build                    build for this machine  -> kiipr
 #   make cross-build VERSION=0.5.0   Linux x86-64 + ARM64 -> dist/
 #   make test
 
 VERSION ?= dev
-BIN := suchi
+BIN := kiipr
 BUILD_DIR := dist
-CMD := ./cmd/suchi
-LDFLAGS := -s -w -X github.com/dip-bash/suchi/internal/version.Version=$(VERSION)
+CMD := ./cmd/kiipr
+LDFLAGS := -s -w -X github.com/dip-bash/kiipr/internal/version.Version=$(VERSION)
 
 .PHONY: build test cross-build clean
 
@@ -21,7 +21,7 @@ cross-build:
 	@mkdir -p $(BUILD_DIR)
 	GOOS=linux GOARCH=amd64 go build -ldflags "$(LDFLAGS)" -o $(BUILD_DIR)/$(BIN)-linux-x86_64 $(CMD)
 	GOOS=linux GOARCH=arm64  go build -ldflags "$(LDFLAGS)" -o $(BUILD_DIR)/$(BIN)-linux-aarch64 $(CMD)
-	@echo "built suchi $(VERSION):" && ls -lh $(BUILD_DIR)
+	@echo "built kiipr $(VERSION):" && ls -lh $(BUILD_DIR)
 
 test:
 	go vet ./...

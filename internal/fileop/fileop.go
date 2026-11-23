@@ -1,4 +1,4 @@
-// Package fileop copies and moves files and folders for `suchi -p`.
+// Package fileop copies and moves files and folders for `kiipr -p`.
 package fileop
 
 import (

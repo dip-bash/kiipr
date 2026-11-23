@@ -9,7 +9,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	zone "github.com/lrstanley/bubblezone"
 
-	"github.com/dip-bash/suchi/internal/store"
+	"github.com/dip-bash/kiipr/internal/store"
 )
 
 const doubleClick = 450 * time.Millisecond
@@ -283,14 +283,14 @@ func (m *model) resultFor(c clipItem) (Result, error) {
 	return Result{Chosen: true, Kind: store.ClipText, Text: text}, err
 }
 
-// choose copies the highlighted entry and closes suchi.
+// choose copies the highlighted entry and closes kiipr.
 func (m *model) choose() tea.Cmd {
 	if m.tab == tabSnips {
 		sn, ok := m.selectedSnip()
 		if !ok {
 			return nil
 		}
-		// What suchi copies is not "history": keep it out of the Clip tab.
+		// What kiipr copies is not "history": keep it out of the Clip tab.
 		_ = m.st.IgnoreNext(m.ctx, sn.s.Body)
 		m.result = Result{Chosen: true, Kind: store.ClipText, Text: sn.s.Body}
 		return tea.Quit
@@ -461,9 +461,9 @@ func (m *model) run() tea.Cmd {
 		return nil
 	}
 	// The command runs in its own shell; afterwards wait for Enter so its
-	// output stays readable before suchi redraws.
+	// output stays readable before kiipr redraws.
 	const wrapper = `sh -c "$1"; s=$?; printf '\n[exit %s] press Enter to return... ' "$s"; read _; exit "$s"`
-	cmd := exec.Command("sh", "-c", wrapper, "suchi", sn.s.Body)
+	cmd := exec.Command("sh", "-c", wrapper, "kiipr", sn.s.Body)
 	name := sn.s.Name
 	m.execing.Store(true)
 	return tea.ExecProcess(cmd, func(err error) tea.Msg { return execDoneMsg{name: name, err: err} })

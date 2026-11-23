@@ -16,7 +16,7 @@ import (
 	"time"
 )
 
-// TestMain doubles as the "other suchi" process: the tests re-run this test
+// TestMain doubles as the "other kiipr" process: the tests re-run this test
 // binary with PIDLOCK_HELPER set to get a real second process holding the lock.
 func TestMain(m *testing.M) {
 	if mode := os.Getenv("PIDLOCK_HELPER"); mode != "" {
@@ -27,7 +27,7 @@ func TestMain(m *testing.M) {
 }
 
 func helper(mode, path string) {
-	// Like suchi itself: set up signal handling BEFORE taking the lock.
+	// Like kiipr itself: set up signal handling BEFORE taking the lock.
 	c := make(chan os.Signal, 1)
 	if mode == "stubborn" { // ignores SIGTERM, like a process stuck in a long command
 		signal.Ignore(syscall.SIGTERM)
@@ -68,7 +68,7 @@ func startHelper(t *testing.T, mode, path string) *exec.Cmd {
 	return cmd
 }
 
-func lockPath(t *testing.T) string { return filepath.Join(t.TempDir(), "state", "suchi-ui.pid") }
+func lockPath(t *testing.T) string { return filepath.Join(t.TempDir(), "state", "kiipr-ui.pid") }
 
 func TestAcquireHolderRelease(t *testing.T) {
 	p := lockPath(t)
